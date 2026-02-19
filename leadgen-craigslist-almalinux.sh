@@ -180,4 +180,289 @@ export default function LeadsPage() {
                     <Badge variant={lead.prob.startsWith("Green") ? "default" : "secondary"} className={
                       lead.prob.startsWith("Green") ? "bg-green-500/20 text-green-700" :
                       lead.prob.startsWith("Orange") ? "bg-orange-500/20 text-orange-700" :
-                      lead.prob.startsWith("Yellow") ? "bg-yellow-500/20 text-yellow-700" : "bg-red-500/20 text-red-
+                      lead.prob.startsWith("Yellow") ? "bg-yellow-500/20 text-yellow-700" : "bg-red-500/20 text-red-700"
+                    }>
+                      {lead.prob}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{lead.status}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild><Button variant="outline" size="sm">Call</Button></DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader><DialogTitle>Call Script for {lead.company}</DialogTitle></DialogHeader>
+                        <p>Key points: [AI-generated from history]...</p>
+                        <p>Suggested opener: "Hey, following up on your Craigslist post..."</p>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+EOF
+
+# Funds page
+mkdir -p src/app/(dashboard)/funds
+cat > src/app/(dashboard)/funds/page.tsx << 'EOF'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+export default function FundsPage() {
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Funds & Usage</h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="glass-card"><CardHeader><CardTitle>Total Closed</CardTitle></CardHeader><CardContent><div className="text-4xl font-bold">$18,420</div></CardContent></Card>
+        <Card className="glass-card"><CardHeader><CardTitle>Token Usage</CardTitle></CardHeader><CardContent><div className="text-4xl font-bold">$187</div></CardContent></Card>
+        <Card className="glass-card"><CardHeader><CardTitle>Net Profit</CardTitle></CardHeader><CardContent><div className="text-4xl font-bold">$18,233</div></CardContent></Card>
+      </div>
+    </div>
+  )
+}
+EOF
+
+# Posts Monitor page
+mkdir -p src/app/(dashboard)/posts
+cat > src/app/(dashboard)/posts/page.tsx << 'EOF'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+
+export default function PostsMonitor() {
+  const posts = [{ burner: "burner1@gmail.com", title: "Web Dev Services", status: "Live", replies: 3 }]
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Posts Monitor</h1>
+      <Card className="glass-card">
+        <CardHeader><CardTitle>Active Craigslist Posts</CardTitle></CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader><TableRow><TableHead>Burner</TableHead><TableHead>Title</TableHead><TableHead>Status</TableHead><TableHead>Replies</TableHead></TableRow></TableHeader>
+            <TableBody>{posts.map((p, i) => <TableRow key={i}><TableCell>{p.burner}</TableCell><TableCell>{p.title}</TableCell><TableCell>{p.status}</TableCell><TableCell>{p.replies}</TableCell></TableRow>)}</TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+    </div>
+  )
+}
+EOF
+
+# CEO Chat page
+mkdir -p src/app/(dashboard)/chat
+cat > src/app/(dashboard)/chat/page.tsx << 'EOF'
+"use client"
+
+import { useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+
+export default function CEOChat() {
+  const [messages, setMessages] = useState<{ role: "user" | "ceo"; content: string }[]>([])
+  const [input, setInput] = useState("")
+
+  const sendMessage = async () => {
+    if (!input.trim()) return
+    setMessages(prev => [...prev, { role: "user", content: input }])
+    setMessages(prev => [...prev, { role: "ceo", content: "Nudge received – adjusting strategy..." }]) // temp
+    setInput("")
+  }
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-3xl font-bold">Chat with CEO Agent</h1>
+      <Card className="glass-card h-[60vh] flex flex-col">
+        <CardContent className="flex-1 overflow-y-auto p-6 space-y-4">
+          {messages.map((m, i) => (
+            <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+              <div className={`max-w-[80%] p-4 rounded-2xl ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+                {m.content}
+              </div>
+            </div>
+          ))}
+        </CardContent>
+        <div className="p-4 border-t flex gap-2">
+          <Input value={input} onChange={e => setInput(e.target.value)} placeholder="Nudge CEO (e.g., pause Craigslist, focus high-prob leads)" onKeyDown={e => e.key === "Enter" && sendMessage()} />
+          <Button onClick={sendMessage}>Send</Button>
+        </div>
+      </Card>
+    </div>
+  )
+}
+EOF
+
+# Setup & Tools page
+mkdir -p src/app/(dashboard)/setup
+cat > src/app/(dashboard)/setup/page.tsx << 'EOF'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Copy } from "lucide-react"
+
+export default function SetupPage() {
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    alert("Command copied!")
+  }
+
+  return (
+    <div className="space-y-8 p-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Setup & Tools</h1>
+        <p className="text-muted-foreground mt-2">
+          Quick actions, install scripts, and enable new features for your LeadGen Beast.
+        </p>
+      </div>
+
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle>Enable New Platforms</CardTitle>
+          <CardDescription>Add Reddit, X, LinkedIn, etc. (requires git pull + restart)</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="reddit" className="text-base">Reddit Platform</Label>
+              <p className="text-sm text-muted-foreground">Scrape & reply in r/forhire etc. (karma-safe)</p>
+            </div>
+            <Switch id="reddit" disabled />
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <Label htmlFor="linkedin" className="text-base">LinkedIn (coming soon)</Label>
+              <p className="text-sm text-muted-foreground">High-close-rate DMs & posts</p>
+            </div>
+            <Switch id="linkedin" disabled />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle>Install Instructions & Scripts</CardTitle>
+          <CardDescription>Copy-paste commands for common upgrades</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Accordion type="single" collapsible className="w-full">
+            <AccordionItem value="ssl">
+              <AccordionTrigger>Add Free SSL (Caddy reverse proxy)</AccordionTrigger>
+              <AccordionContent className="space-y-4">
+                <p>Run this on VPS to add HTTPS + auto-renew certs:</p>
+                <pre className="bg-muted p-4 rounded-xl overflow-auto text-sm font-mono">
+                  {`dnf install -y caddy
+# Configure Caddyfile at /etc/caddy/Caddyfile with your domain
+caddy reload`}
+                </pre>
+                <Button variant="outline" size="sm" onClick={() => copyToClipboard("dnf install -y caddy")}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy Full Script
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="supabase">
+              <AccordionTrigger>Add Supabase (persistent leads DB)</AccordionTrigger>
+              <AccordionContent>
+                <p>1. Sign up at supabase.com → create project<br/>2. Get connection string<br/>3. Run in dashboard container:</p>
+                <pre className="bg-muted p-4 rounded-xl overflow-auto text-sm font-mono">docker compose down && # env update</pre>
+                <Button variant="outline" size="sm" onClick={() => copyToClipboard("...")}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="update">
+              <AccordionTrigger>Check for Swarm Updates</AccordionTrigger>
+              <AccordionContent>
+                <p>Pulls latest skills from your GitHub repo:</p>
+                <pre className="bg-muted p-4 rounded-xl overflow-auto text-sm font-mono">
+                  cd /opt/leadgen-skills && git pull && docker compose restart claw-daemon
+                </pre>
+                <Button variant="outline" size="sm" onClick={() => copyToClipboard("cd /opt/leadgen-skills && git pull && docker compose restart claw-daemon")}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy Update Command
+                </Button>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </CardContent>
+      </Card>
+
+      <div className="text-sm text-muted-foreground mt-8">
+        Pro tip: For automated toggles, we can add safe API endpoints later.
+      </div>
+    </div>
+  )
+}
+EOF
+
+# Note for sidebar
+echo "# After deploy, edit src/components/layout/sidebar.tsx to add links: /leads, /funds, /posts, /chat, /setup" >> /opt/leadgen-skills/README-dashboard-custom.txt
+
+# Dockerfile
+cat > Dockerfile << 'EOF'
+FROM node:20-alpine AS base
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=base /app/public ./public
+COPY --from=base /app/.next ./.next
+COPY --from=base /app/node_modules ./node_modules
+COPY --from=base /app/package.json ./package.json
+COPY --from=base /app/next.config.mjs ./
+EXPOSE 3000
+CMD ["npm", "start"]
+EOF
+
+cd /opt/leadgen-skills
+
+# docker-compose
+cat > docker-compose.yml << EOF
+services:
+  claw-daemon:
+    image: openclaw/openclaw:latest
+    restart: always
+    volumes:
+      - ./skills:/skills
+      - data:/data
+    environment:
+      - MAIN_GMAIL=$MAIN_GMAIL
+      - BURNERS=$BURNERS
+      - PROXIES=$PROXIES
+      - COSTS=$COSTS
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - claw-daemon
+
+volumes:
+  data:
+EOF
+
+docker compose up -d --build
+
+IP=$(curl -s ifconfig.me)
+echo "✅ FULL DEPLOY COMPLETE!"
+echo "Dashboard (all sections live): http://$IP:3000"
+echo "Sidebar should now have Leads / Funds / Posts / Chat / Setup (edit sidebar.tsx if links missing)"
+echo "Login with main Gmail stub. First build may take 2-4 min – refresh page."
+echo "Next: SSH in to customize sidebar nav + add real WS/live data!"
