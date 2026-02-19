@@ -16,7 +16,7 @@ git clone https://github.com/openclaw/openclaw.git /opt/openclaw
 cd /opt/openclaw
 
 # Clone YOUR skills
-git clone https://github.com/YOURUSERNAME/leadgen-claw-skills.git /opt/leadgen-skills
+git clone https://github.com/chasesdavis/leadgen-claw-skills.git /opt/leadgen-skills
 
 # Docker setup
 cat > docker-compose.yml <<EOF
